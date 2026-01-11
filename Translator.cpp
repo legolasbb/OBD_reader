@@ -6,6 +6,7 @@
 #include "Translator.h"
 #include "SerialPort.h"
 
+
 std::string one_number_clean(const std::string& result, const std::string& expected_return) {
     if (result[result.size()-1] != '>') {
         return "-1";
@@ -38,7 +39,7 @@ std::pair<std::string, std::string> two_number_clean(const std::string& result, 
     }
 
     const std::string num1 {cut_result.substr(header_pos + 6, 2)};
-    const std::string num2 {cut_result.substr(header_pos + 8, 2)};
+    const std::string num2 {cut_result.substr(header_pos + 9, 2)};
 
     return std::make_pair(num1, num2);;
 }
@@ -60,7 +61,6 @@ int get_speed(const serial_port& port){
 
     return speed;
 }
-
 int get_rpm(const serial_port& port) {
     const std::string message {"01 0C\r"};
 
@@ -74,7 +74,6 @@ int get_rpm(const serial_port& port) {
 
     const int num1 = std::stoi(clean_result.first, nullptr, 16);
     const int num2 = std::stoi(clean_result.second, nullptr, 16);
-
     return (256*num1+num2)/4;
 };
 
@@ -89,5 +88,3 @@ int get_intake_temp();
 
 //TBD
 int get_throttle_position();
-
-
