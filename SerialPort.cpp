@@ -43,7 +43,7 @@ int serial_port::write_to_port(const std::string& message) const {
     return static_cast<int>(bytes_sent);
 }
 
-std::string serial_port::read_until_timeout(char terminator, int timeoutMs) const{
+std::string serial_port::read_until_timeout(char terminator) const{
     // TODO: add timeout
     std::string result {};
     char temp_buffer[1]{};
@@ -130,4 +130,8 @@ bool serial_port::configure_port(const int baudRate) const {
     }
 
     return true;
+}
+
+int main() {
+    std::cout << "Serial port opened" << "\n";
 }

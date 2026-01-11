@@ -7,4 +7,6 @@ include_directories(.)
 
 add_executable(OBD_reader
         SerialPort.cpp
-        SerialPort.h)
+        SerialPort.h
+        Translator.h
+        Translator.cpp)

@@ -29,7 +29,7 @@ class serial_port
         // I/O
         int write_to_port(const std::string& message) const;
 
-        std::string read_until_timeout(char terminator = '>', int timeoutMs = 2000) const;
+        std::string read_until_timeout(char terminator = '>') const;
     private:
         int file_descriptor;
         bool configure_port(int baudRate) const;
