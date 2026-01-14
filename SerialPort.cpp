@@ -2,6 +2,12 @@
 // Created by Piotr Gdański on 07/01/2026.
 //
 // TODO: debuging and testing
+#include <unistd.h>
+#include <cerrno>
+#include <cstring>
+#include <termios.h>
+#include <fcntl.h>
+
 #include "SerialPort.h"
 
 serial_port::serial_port() : file_descriptor(-1) {}
