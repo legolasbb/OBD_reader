@@ -137,7 +137,3 @@ bool serial_port::configure_port(const int baudRate) const {
 
     return true;
 }
-
-int main() {
-    std::cout << "Serial port opened" << "\n";
-}
