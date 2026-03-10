@@ -42,8 +42,9 @@ class serial_port
         /// @details This function blocks execution until the terminator is found, the device disconnects,
         /// or the internal read timeout (configured in termios) expires.
         /// @param terminator The character that signals the end of the message (e.g., '>').
+        /// @param timeout
         /// @return The accumulated string excluding the terminator, or partial data on error.
-        std::string read_until_timeout(char terminator = '>') const;
+        std::string read_until_timeout(char terminator = '>', int timeout=10) const;
     private:
         int file_descriptor;
 
@@ -55,6 +56,5 @@ class serial_port
         bool configure_port(int baudRate) const;
 
 };
-
 
 #endif //OBD_READER_SERIALPORT_H

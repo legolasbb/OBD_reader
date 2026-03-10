@@ -27,6 +27,9 @@ def create_message(given_message):
         # get throttle position
         # 51 dec = 33 hex -> 51 * 100 / 255 = 20%
         return_response = b"41 11 %02X" % 51
+    elif given_message == b"AT Z":
+        print("Conncection try")
+        return_response = b"ELM327 v1.5"
     return return_response
 
 
@@ -41,7 +44,7 @@ while True:
     buffer = os.read(master, 1)
 
     if not buffer:
-        break
+        continue
 
     while True:
         new_data = os.read(master, 1)

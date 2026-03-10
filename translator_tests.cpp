@@ -1,11 +1,13 @@
 //
 // Created by Piotr Gdański on 18/01/2026.
 //
-#include "string"
+#include <string>
+#include <iostream>
 
 #include "Translator.h"
+#include  "utils.h"
 
-void assert_equal(int expected, int actual, std::string test_name) {
+void assert_equal(const int expected, const int actual, const std::string_view test_name) {
     if (expected == actual) {
         std::cout << "Test " << test_name << " passed" << "\n";
     }
@@ -40,11 +42,16 @@ void primary_test(const serial_port & test_port) {
 }
 
 int main() {
-    std::string port_path {};
-    std::cout<<"Insert port name: ";
-    std::cin>>port_path;
-    serial_port test_port{};
-    test_port.open_port(port_path, 38400);
+    connection_data detected_port{detect_port()};
+
+
+    if (!detected_port.success) {
+        std::cerr << "Port not detected" << "\n";
+        return 1;
+    }
+
+    serial_port test_port;
+    test_port.open_port(detected_port.port_name, detected_port.baud_rate);
 
     primary_test(test_port);
 

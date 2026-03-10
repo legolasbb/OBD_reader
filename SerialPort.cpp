@@ -4,11 +4,13 @@
 // TODO: debuging and testing
 #include <unistd.h>
 #include <cerrno>
-#include <cstring>
 #include <termios.h>
 #include <fcntl.h>
+#include <poll.h>
 
 #include "SerialPort.h"
+
+#include <thread>
 
 serial_port::serial_port() : file_descriptor(-1) {}
 
@@ -17,7 +19,7 @@ serial_port::~serial_port() {
 }
 
 bool serial_port::open_port(const std::string& port_path, int baudRate) {
-    file_descriptor = open(port_path.c_str(), O_RDWR | O_NOCTTY);
+    file_descriptor = open(port_path.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
     if (file_descriptor == -1) {
         std::cerr << "Error opening serial port " << strerror(errno) <<"\n";
         return false;
@@ -31,6 +33,8 @@ bool serial_port::open_port(const std::string& port_path, int baudRate) {
 }
 void serial_port::close_port() {
     if (file_descriptor != -1) {
+        tcflush(file_descriptor, TCIOFLUSH);
+
         close(file_descriptor);
         file_descriptor = -1;
     }
@@ -49,24 +53,51 @@ int serial_port::write_to_port(const std::string& message) const {
     return static_cast<int>(bytes_sent);
 }
 
-std::string serial_port::read_until_timeout(char terminator) const{
-    // TODO: add timeout
+std::string serial_port::read_until_timeout(const char terminator, const int timeout) const{
     std::string result {};
     char temp_buffer[1]{};
+
+    const auto start  = std::chrono::steady_clock::now();
+
     while (true) {
+
+        auto current = std::chrono::steady_clock::now();
+
+        const int remaining_time =  std::chrono::duration_cast<std::chrono::milliseconds>(current-start).count();
+
+        if (remaining_time > timeout) {
+            std::cerr << "Serial port timed out" << "\n";
+            break;
+        }
+
+        // Configuring
+        struct pollfd pfd{};
+        pfd.fd = file_descriptor;
+        pfd.events = POLLIN; // configuring wait for read
+
+        int poll_ret = poll(&pfd, 1, remaining_time);
+
+        if (poll_ret ==0) {
+            std::cerr << "Serial port timed out (poll)" << "\n";
+        }
+        else if (poll_ret == -1) {
+            std::cerr << "Error reading from serial port (poll)" << strerror(errno) <<"\n";
+        }
+
+        if (pfd.revents &  POLLIN) {
             const ssize_t read_return {read(file_descriptor, temp_buffer, 1)};
-        if (read_return == -1) {
-            if (errno == EAGAIN) {
-                continue;
+            if (read_return == -1) {
+                if (errno == EAGAIN) {
+                    continue;
+                }
+                std::cerr << "Read error " << strerror(errno) <<"\n";
+                break;
             }
-            std::cerr << "Read error " << strerror(errno) <<"\n";
-            break;
-        }
-        else if (read_return == 0) {
-            std::cerr << "Device disconnected" << "\n";
-            break;
-        }
-        else {
+            if (read_return == 0) {
+                std::cerr << "Device disconnected" << "\n";
+                break;
+            }
+
             result+=temp_buffer[0];
             if (temp_buffer[0] == terminator) {
                 //Full message read
