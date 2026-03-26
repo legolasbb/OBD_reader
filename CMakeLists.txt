@@ -11,7 +11,8 @@ add_executable(OBD_reader
         Translator.h
         Translator.cpp
         utils.cpp
-        utils.h)
+        utils.h
+        main.cpp)
 add_executable(run_tests
         SerialPort.cpp
         SerialPort.h

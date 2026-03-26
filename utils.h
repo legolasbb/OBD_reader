@@ -8,6 +8,12 @@
 #pragma once
 #include <string>
 
+enum exit_code {
+    SUCCESS=0,
+    ERROR_DETECTION=1,
+    ERROR_CONNECTION=2,
+};
+
 struct connection_data {
     std::string port_name{};
     int baud_rate {-1};

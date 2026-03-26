@@ -8,5 +8,5 @@
 - [x] All port communication
 - [x] Getting and translating most important data
 - [x] Automatic port scanning and detection
-- [ ] First prototype displaying live data
+- [x] First prototype displaying live data (in terminal)
 - [ ] Graphical user interface

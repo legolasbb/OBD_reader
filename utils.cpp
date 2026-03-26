@@ -16,7 +16,9 @@ namespace fs = std::filesystem;
 constexpr int baud_rates[4] {38400, 115200, 9600, 19200};
 
 
+
 std::vector<std::string> scan_ports() {
+    // TODO: add port filtering to allow faster port detection
     std::vector<std::string> result;
     const fs::path ports_path("/dev");
 

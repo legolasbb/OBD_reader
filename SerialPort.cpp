@@ -1,7 +1,6 @@
 //
 // Created by Piotr Gdański on 07/01/2026.
 //
-// TODO: debuging and testing
 #include <unistd.h>
 #include <cerrno>
 #include <termios.h>

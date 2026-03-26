@@ -51,8 +51,8 @@ def create_message(given_message, mode):
             return_response = b"41 0C %02X %02X" % (12, 28)
         else:
             cur_rpm = car.rpm
-            a = cur_rpm // 256
-            b = cur_rpm % 256
+            a = int(cur_rpm // 256)
+            b = int(cur_rpm % 256)
             return_response = b"41 0C %02X %02X" % (a, b)
     elif given_message == b"01 04":
         if mode == 0 or mode == 1:
@@ -120,6 +120,8 @@ chosen_mode = get_mode()
 
 master, slave = pty.openpty()
 port_name = os.ttyname(slave)
+
+print(port_name, 'opened port')
 
 simulation(master, chosen_mode)
 
