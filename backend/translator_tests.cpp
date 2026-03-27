@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "Translator.h"
-#include  "utils.h"
+#include "../utils.h"
 
 void assert_equal(const int expected, const int actual, const std::string_view test_name) {
     if (expected == actual) {

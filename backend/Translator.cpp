@@ -3,7 +3,7 @@
 //
 #include <iostream>
 #include <string>
-#include "Translator.h"
+#include "../Translator.h"
 #include "SerialPort.h"
 
 // TODO: Make clean functions ready for other formats of data (extra whitespace etc.)

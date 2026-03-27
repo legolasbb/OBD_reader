@@ -2,7 +2,7 @@
 // Created by Piotr Gdański on 13/02/2026.
 //
 
-#include "utils.h"
+#include "../utils.h"
 #include "SerialPort.h"
 
 #include <filesystem>

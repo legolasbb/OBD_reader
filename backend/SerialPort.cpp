@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <poll.h>
 
-#include "SerialPort.h"
+#include "../SerialPort.h"
 
 #include <thread>
 
