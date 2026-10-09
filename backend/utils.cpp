@@ -23,7 +23,7 @@ std::vector<std::string> scan_ports() {
     const fs::path ports_path("/dev");
 
     if (!fs::exists(ports_path) || !fs::is_directory(ports_path)) {
-        std::cerr << "Div library does not exist";
+        std::cerr << "/dev does not exist or is not a directory.\n";
         return result;
     }
 
@@ -70,4 +70,3 @@ connection_data detect_port() {
 
     return result;
 }
-

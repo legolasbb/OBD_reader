@@ -13,14 +13,14 @@ connection_data connection_attempt() {
         constexpr int wait_ms = 5000;
         connection_data detected_port{detect_port()};
         if (detected_port.success) {
-            std::cout<<"Port detected successfully, proceeding\n";
+            std::cout<<"Port detected. Connecting to adapter...\n";
             return detected_port;
         }
-        std::cout<<"Port not detected successfully, trying again in"<< wait_ms/1000<<" seconds\n";
+        std::cout<<"No port detected. Waiting: "<< wait_ms/1000<<" s\n";
         std::this_thread::sleep_for(std::chrono::milliseconds(wait_ms));
     }
 
-    throw std::runtime_error{"Port not detected successfully"};
+    throw std::runtime_error{"OBD adapter port not detected."};
 }
 
 void display_data(serial_port& car_port) {
@@ -37,8 +37,8 @@ void display_data(serial_port& car_port) {
         std::cout << "===========================\n";
         std::cout << "    LIVE OBD DASHBOARD     \n";
         std::cout << "===========================\n";
-        std::cout << "Predkosc: " << speed << " km/h    \n";
-        std::cout << "Obroty:   " << rpm << " RPM      \n";
+        std::cout << "Speed:    " << speed << " km/h    \n";
+        std::cout << "RPM:      " << rpm << " RPM     \n";
         std::cout << "===========================\n";
 
         std::cout << std::flush;
@@ -59,7 +59,7 @@ int main() {
 
     serial_port car_port;
     if (!car_port.open_port(detected_port.port_name, detected_port.baud_rate)) {
-        std::cout<<"Unable to connect to port";
+        std::cout<<"Unable to connect to port.\n";
         return exit_code::ERROR_CONNECTION;
     }
 
