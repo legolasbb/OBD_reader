@@ -20,11 +20,11 @@ serial_port::~serial_port() {
 bool serial_port::open_port(const std::string& port_path, int baudRate) {
     file_descriptor = open(port_path.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
     if (file_descriptor == -1) {
-        std::cerr << "Error opening serial port " << strerror(errno) <<"\n";
+        std::cerr << "Error opening serial port: " << strerror(errno) <<"\n";
         return false;
     }
     if (!serial_port::configure_port(baudRate)) {
-        std::cerr << "Error setting up serial port " << "\n";
+        std::cerr << "Error configuring serial port" << "\n";
         close_port();
         return false;
     }
@@ -46,7 +46,7 @@ int serial_port::write_to_port(const std::string& message) const {
 
     ssize_t bytes_sent { write(file_descriptor, message.c_str(), message.length())};
     if (bytes_sent == -1) {
-        std::cerr << "Error writing to serial port " << strerror(errno) <<"\n";
+        std::cerr << "Error writing to serial port: " << strerror(errno) <<"\n";
         return -1;
     }
     return static_cast<int>(bytes_sent);
@@ -80,7 +80,7 @@ std::string serial_port::read_until_timeout(const char terminator, const int tim
             std::cerr << "Serial port timed out (poll)" << "\n";
         }
         else if (poll_ret == -1) {
-            std::cerr << "Error reading from serial port (poll)" << strerror(errno) <<"\n";
+            std::cerr << "Error reading from serial port (poll): " << strerror(errno) <<"\n";
         }
 
         if (pfd.revents &  POLLIN) {
@@ -89,7 +89,7 @@ std::string serial_port::read_until_timeout(const char terminator, const int tim
                 if (errno == EAGAIN) {
                     continue;
                 }
-                std::cerr << "Read error " << strerror(errno) <<"\n";
+                std::cerr << "Read error: " << strerror(errno) <<"\n";
                 break;
             }
             if (read_return == 0) {
@@ -111,7 +111,7 @@ bool serial_port::configure_port(const int baudRate) const {
     struct termios tty {};
 
     if (tcgetattr(file_descriptor, &tty) != 0) {
-        std::cerr << "Error from tcgetattr\n";
+        std::cerr << "Error reading port settings (tcgetattr)\n";
         return false;
     }
     //setting speed to given baudrate
@@ -122,7 +122,7 @@ bool serial_port::configure_port(const int baudRate) const {
         case 9600: speed = B38400; break;
         case 19200: speed = B19200; break;
         default:
-            std::cerr << "Warning: Unsupported baud rate " << baudRate
+            std::cerr << "Warning: unsupported baud rate " << baudRate
                       << ". Defaulting to 38400.\n";
             speed = B38400;
     }
@@ -161,7 +161,7 @@ bool serial_port::configure_port(const int baudRate) const {
 
     // Saving settings
     if (tcsetattr(file_descriptor, TCSANOW, &tty) != 0) {
-        std::cerr << "Error from tcsetattr\n";
+        std::cerr << "Error saving port settings (tcsetattr)\n";
         return false;
     }
 
